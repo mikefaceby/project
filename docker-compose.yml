@@ -22,6 +22,8 @@ services:
       - product_db
     networks:
       - my_network
+    ports:
+      - "5002:5002"
 
   cart_order_management_service:
     build: 
@@ -33,6 +35,8 @@ services:
       - cart_order_db
     networks:
       - my_network
+    ports:
+      - "5003:5003"
 
   sales_payment_service:
     build: 
@@ -44,6 +48,8 @@ services:
       - sales_payment_db
     networks:
       - my_network
+    ports:
+      - "5001:5001"
 
   return_refund_service:
     build: 
@@ -55,95 +61,8 @@ services:
       - return_refund_db
     networks:
       - my_network
-
-  user_db:
-    image: mariadb:latest
-    environment:
-      MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_DATABASE: user_management
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
-    volumes:
-      - ./db/user_db:/var/lib/mysql
-    networks:
-      - my_network
-
-  product_db:
-    image: mariadb:latest
-    environment:
-      MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_DATABASE: product_management
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
-    volumes:
-      - ./db/product_db:/var/lib/mysql
-    networks:
-      - my_network
-
-  cart_order_db:
-    image: mariadb:latest
-    environment:
-      MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_DATABASE: cart_order_management
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
-    volumes:
-      - ./db/cart_order_db:/var/lib/mysql
-    networks:
-      - my_network
-
-  sales_payment_db:
-    image: mariadb:latest
-    environment:
-      MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_DATABASE: sales_payment
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
-    volumes:
-      - ./db/sales_payment_db:/var/lib/mysql
-    networks:
-      - my_network
-
-  return_refund_db:
-    image: mariadb:latest
-    environment:
-      MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_DATABASE: return_refund
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
-    volumes:
-      - ./db/return_refund_db:/var/lib/mysql
-    networks:
-      - my_network
-
- # Adminer Service
-  adminer:
-    image: adminer:latest
-    container_name: adminer
     ports:
-      - 8080:8080  # Adminer Webportal auf Port 8080 zugänglich
-    networks:
-      - my_network
-    depends_on:
-      - user_db
-      - product_db
-      - cart_order_db
-      - sales_payment_db
-      - return_refund_db
-
-  api_gateway:
-    build: 
-      context: ./gateway
-    ports:
-      - "8000:8000"  # Das Gateway wird auf Port 8000 verfügbar sein
-    networks:
-      - my_network
-    depends_on:
-      - user_management_service
-      - product_management_service
-      - cart_order_management_service
-      - sales_payment_service
-      - return_refund_service
+      - "5004:5004"
 
 networks:
   my_network:
