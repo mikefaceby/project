@@ -1,10 +1,14 @@
+version: "3.8"
+
 services:
   user_management_service:
     build: 
       context: ./services/user_management
       dockerfile: Dockerfile
+    env_file:
+      - .env
     environment:
-      - DATABASE_URL=mariadb://user:password@user_db/user_management
+      - DATABASE_URL=mariadb://${USER_DB_USER}:${USER_DB_PASSWORD}@user_db/${USER_DB_NAME}
     depends_on:
       - user_db
     networks:
@@ -16,8 +20,10 @@ services:
     build: 
       context: ./services/product_management
       dockerfile: Dockerfile
+    env_file:
+      - .env
     environment:
-      - DATABASE_URL=mariadb://user:password@product_db/product_management
+      - DATABASE_URL=mariadb://${PRODUCT_DB_USER}:${PRODUCT_DB_PASSWORD}@product_db/${PRODUCT_DB_NAME}
     depends_on:
       - product_db
     networks:
@@ -29,8 +35,10 @@ services:
     build: 
       context: ./services/cart_order_management
       dockerfile: Dockerfile
+    env_file:
+      - .env
     environment:
-      - DATABASE_URL=mariadb://user:password@cart_order_db/cart_order_management
+      - DATABASE_URL=mariadb://${CART_ORDER_DB_USER}:${CART_ORDER_DB_PASSWORD}@cart_order_db/${CART_ORDER_DB_NAME}
     depends_on:
       - cart_order_db
     networks:
@@ -42,8 +50,10 @@ services:
     build: 
       context: ./services/sales_payment
       dockerfile: Dockerfile
+    env_file:
+      - .env
     environment:
-      - DATABASE_URL=mariadb://user:password@sales_payment_db/sales_payment
+      - DATABASE_URL=mariadb://${SALES_PAYMENT_DB_USER}:${SALES_PAYMENT_DB_PASSWORD}@sales_payment_db/${SALES_PAYMENT_DB_NAME}
     depends_on:
       - sales_payment_db
     networks:
@@ -55,14 +65,66 @@ services:
     build: 
       context: ./services/return_refund
       dockerfile: Dockerfile
+    env_file:
+      - .env
     environment:
-      - DATABASE_URL=mariadb://user:password@return_refund_db/return_refund
+      - DATABASE_URL=mariadb://${RETURN_REFUND_DB_USER}:${RETURN_REFUND_DB_PASSWORD}@return_refund_db/${RETURN_REFUND_DB_NAME}
     depends_on:
       - return_refund_db
     networks:
       - my_network
     ports:
       - "5004:5004"
+
+  user_db:
+    image: mariadb:latest
+    env_file:
+      - .env
+    environment:
+      - MYSQL_ROOT_PASSWORD=${USER_DB_PASSWORD}
+      - MYSQL_DATABASE=${USER_DB_NAME}
+    networks:
+      - my_network
+
+  product_db:
+    image: mariadb:latest
+    env_file:
+      - .env
+    environment:
+      - MYSQL_ROOT_PASSWORD=${PRODUCT_DB_PASSWORD}
+      - MYSQL_DATABASE=${PRODUCT_DB_NAME}
+    networks:
+      - my_network
+
+  cart_order_db:
+    image: mariadb:latest
+    env_file:
+      - .env
+    environment:
+      - MYSQL_ROOT_PASSWORD=${CART_ORDER_DB_PASSWORD}
+      - MYSQL_DATABASE=${CART_ORDER_DB_NAME}
+    networks:
+      - my_network
+
+  sales_payment_db:
+    image: mariadb:latest
+    env_file:
+      - .env
+    environment:
+      - MYSQL_ROOT_PASSWORD=${SALES_PAYMENT_DB_PASSWORD}
+      - MYSQL_DATABASE=${SALES_PAYMENT_DB_NAME}
+    networks:
+      - my_network
+
+  return_refund_db:
+    image: mariadb:latest
+    env_file:
+      - .env
+    environment:
+      - MYSQL_ROOT_PASSWORD=${RETURN_REFUND_DB_PASSWORD}
+      - MYSQL_DATABASE=${RETURN_REFUND_DB_NAME}
+    networks:
+      - my_network
 
 networks:
   my_network:

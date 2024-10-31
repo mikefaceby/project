@@ -1,5 +1,6 @@
-# services/product_service/app.py
+# services/product_management/app.py
 from flask import Flask, request, jsonify
+import os
 import mysql.connector
 
 app = Flask(__name__)
@@ -7,10 +8,10 @@ app = Flask(__name__)
 # Verbindung zur Datenbank herstellen
 def get_db_connection():
     connection = mysql.connector.connect(
-        host='product_db',  # Hostname des MariaDB-Containers
-        user='root',
-        password='root_password',
-        database='product_management'
+        host='[SERVICE_DB_HOST]',  # Hostname des MariaDB-Containers
+        user=os.getenv('[SERVICE_DB_USER]'),
+        password=os.getenv('[SERVICE_DB_PASSWORD]'),
+        database=os.getenv('[SERVICE_DB_NAME]')
     )
     return connection
 
