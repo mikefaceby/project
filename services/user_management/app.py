@@ -15,8 +15,8 @@ def get_db_connection():
     )
     return connection
 
-# GET: Retrieve all users
-@app.route('/users', methods=['GET'])
+# GET: Retrieve all customer
+@app.route('/customer', methods=['GET'])
 def get_users():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -25,8 +25,8 @@ def get_users():
     conn.close()
     return jsonify(users)
 
-# POST: Create a new user
-@app.route('/user', methods=['POST'])
+# POST: Create a new customer
+@app.route('/customer', methods=['POST'])
 def create_user():
     new_user = request.get_json()
     connection = get_db_connection()
@@ -40,8 +40,8 @@ def create_user():
     connection.close()
     return jsonify(new_user), 201
 
-# GET: Retrieve user information
-@app.route('/user/<int:customer_id>', methods=['GET'])
+# GET: Retrieve customer information
+@app.route('/customer/<int:customer_id>', methods=['GET'])
 def get_user(customer_id):
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
@@ -54,8 +54,8 @@ def get_user(customer_id):
         return jsonify(user)
     return jsonify({"error": "User not found"}), 404
 
-# PUT: Update user information
-@app.route('/user/<int:customer_id>', methods=['PUT'])
+# PUT: Update customer information
+@app.route('/customer/<int:customer_id>', methods=['PUT'])
 def update_user(customer_id):
     updated_user = request.get_json()
     connection = get_db_connection()
@@ -69,8 +69,8 @@ def update_user(customer_id):
     connection.close()
     return jsonify(updated_user)
 
-# DELETE: Delete a user
-@app.route('/user/<int:customer_id>', methods=['DELETE'])
+# DELETE: Delete a customer
+@app.route('/customer/<int:customer_id>', methods=['DELETE'])
 def delete_user(customer_id):
     connection = get_db_connection()
     cursor = connection.cursor()

@@ -126,6 +126,35 @@ services:
     networks:
       - my_network
 
+# Adminer Service
+  adminer:
+    image: adminer:latest
+    container_name: adminer
+    ports:
+      - 8080:8080  # Adminer Webportal auf Port 8080 zugänglich
+    networks:
+      - my_network
+    depends_on:
+      - user_db
+      - product_db
+      - cart_order_db
+      - sales_payment_db
+      - return_refund_db
+
+  api_gateway:
+    build: 
+      context: ./gateway
+    ports:
+      - "8000:8000"  # Das Gateway wird auf Port 8000 verfügbar sein
+    networks:
+      - my_network
+    depends_on:
+      - user_management_service
+      - product_management_service
+      - cart_order_management_service
+      - sales_payment_service
+      - return_refund_service
+
 networks:
   my_network:
     driver: bridge
