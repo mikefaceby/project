@@ -8,70 +8,70 @@ app = Flask(__name__)
 # Verbindung zur Datenbank herstellen
 def get_db_connection():
     connection = mysql.connector.connect(
-        host='[SERVICE_DB_HOST]',  # Hostname des MariaDB-Containers
-        user=os.getenv('[SERVICE_DB_USER]'),
-        password=os.getenv('[SERVICE_DB_PASSWORD]'),
-        database=os.getenv('[SERVICE_DB_NAME]')
+        host=os.getenv('SERVICE_DB_HOST'),  # Hostname des MariaDB-Containers
+        user=os.getenv('SERVICE_DB_USER'),
+        password=os.getenv('SERVICE_DB_PASSWORD'),
+        database=os.getenv('SERVICE_DB_NAME')
     )
     return connection
 
-# GET: Retrieve all customer
-@app.route('/customer', methods=['GET'])
-def get_users():
+# GET: Retrieve all customers
+@app.route('/customers', methods=['GET'])
+def get_customers():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     cursor.execute('SELECT * FROM customer_info')
-    users = cursor.fetchall()
+    customers = cursor.fetchall()
     conn.close()
-    return jsonify(users)
+    return jsonify(customers)
 
 # POST: Create a new customer
-@app.route('/customer', methods=['POST'])
-def create_user():
-    new_user = request.get_json()
+@app.route('/customers', methods=['POST'])
+def create_customer():
+    new_customer = request.get_json()
     connection = get_db_connection()
     cursor = connection.cursor()
     cursor.execute(
         "INSERT INTO customer_info (customer_id, name) VALUES (%s, %s)",
-        (new_user['customer_id'], new_user['name'])
+        (new_customer['customer_id'], new_customer['name'])
     )
     connection.commit()
     cursor.close()
     connection.close()
-    return jsonify(new_user), 201
+    return jsonify(new_customer), 201
 
 # GET: Retrieve customer information
-@app.route('/customer/<int:customer_id>', methods=['GET'])
-def get_user(customer_id):
+@app.route('/customers/<int:customer_id>', methods=['GET'])
+def get_customer(customer_id):
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
     cursor.execute("SELECT * FROM customer_info WHERE customer_id = %s", (customer_id,))
-    user = cursor.fetchone()
+    customer = cursor.fetchone()
     cursor.close()
     connection.close()
 
-    if user:
-        return jsonify(user)
-    return jsonify({"error": "User not found"}), 404
+    if customer:
+        return jsonify(customer)
+    return jsonify({"error": "Customer not found"}), 404
 
 # PUT: Update customer information
-@app.route('/customer/<int:customer_id>', methods=['PUT'])
-def update_user(customer_id):
-    updated_user = request.get_json()
+@app.route('/customers/<int:customer_id>', methods=['PUT'])
+def update_customer(customer_id):
+    updated_customer = request.get_json()
     connection = get_db_connection()
     cursor = connection.cursor()
     cursor.execute(
         "UPDATE customer_info SET name = %s WHERE customer_id = %s",
-        (updated_user['name'], customer_id)
+        (updated_customer['name'], customer_id)
     )
     connection.commit()
     cursor.close()
     connection.close()
-    return jsonify(updated_user)
+    return jsonify(updated_customer)
 
 # DELETE: Delete a customer
-@app.route('/customer/<int:customer_id>', methods=['DELETE'])
-def delete_user(customer_id):
+@app.route('/customers/<int:customer_id>', methods=['DELETE'])
+def delete_customer(customer_id):
     connection = get_db_connection()
     cursor = connection.cursor()
     cursor.execute("DELETE FROM customer_info WHERE customer_id = %s", (customer_id,))
@@ -79,7 +79,7 @@ def delete_user(customer_id):
     cursor.close()
     connection.close()
 
-    return jsonify({"message": "User deleted"})
+    return jsonify({"message": "Customer deleted"})
 
 # POST: Create a new employee
 @app.route('/employee', methods=['POST'])

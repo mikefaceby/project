@@ -15,7 +15,6 @@ services:
       - my_network
     ports:
       - "5000:5000"
-    entrypoint: ["./wait-for-it.sh", "user_db:3306", "--", "python", "app.py"]
 
   product_management_service:
     build:
@@ -31,7 +30,6 @@ services:
       - my_network
     ports:
       - "5002:5002"
-    entrypoint: ["./wait-for-it.sh", "product_db:3306", "--", "python", "app.py"]
 
   cart_order_management_service:
     build:
@@ -47,7 +45,6 @@ services:
       - my_network
     ports:
       - "5003:5003"
-    entrypoint: ["./wait-for-it.sh", "cart_order_db:3306", "--", "python", "app.py"]
 
   sales_payment_service:
     build:
@@ -63,7 +60,6 @@ services:
       - my_network
     ports:
       - "5001:5001"
-    entrypoint: ["./wait-for-it.sh", "sales_payment_db:3306", "--", "python", "app.py"]
 
   return_refund_service:
     build:
@@ -79,7 +75,6 @@ services:
       - my_network
     ports:
       - "5004:5004"
-    entrypoint: ["./wait-for-it.sh", "return_refund_db:3306", "--", "python", "app.py"]
 
   # Datenbankdienste
   user_db:
