@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   user_management_service:
-    build: 
+    build:
       context: ./services/user_management
       dockerfile: Dockerfile
     env_file:
@@ -14,10 +14,11 @@ services:
     networks:
       - my_network
     ports:
-      - "5000:5000" 
+      - "5000:5000"
+    entrypoint: ["./wait-for-it.sh", "user_db:3306", "--", "python", "app.py"]
 
   product_management_service:
-    build: 
+    build:
       context: ./services/product_management
       dockerfile: Dockerfile
     env_file:
@@ -30,9 +31,10 @@ services:
       - my_network
     ports:
       - "5002:5002"
+    entrypoint: ["./wait-for-it.sh", "product_db:3306", "--", "python", "app.py"]
 
   cart_order_management_service:
-    build: 
+    build:
       context: ./services/cart_order_management
       dockerfile: Dockerfile
     env_file:
@@ -45,9 +47,10 @@ services:
       - my_network
     ports:
       - "5003:5003"
+    entrypoint: ["./wait-for-it.sh", "cart_order_db:3306", "--", "python", "app.py"]
 
   sales_payment_service:
-    build: 
+    build:
       context: ./services/sales_payment
       dockerfile: Dockerfile
     env_file:
@@ -60,9 +63,10 @@ services:
       - my_network
     ports:
       - "5001:5001"
+    entrypoint: ["./wait-for-it.sh", "sales_payment_db:3306", "--", "python", "app.py"]
 
   return_refund_service:
-    build: 
+    build:
       context: ./services/return_refund
       dockerfile: Dockerfile
     env_file:
@@ -75,7 +79,9 @@ services:
       - my_network
     ports:
       - "5004:5004"
+    entrypoint: ["./wait-for-it.sh", "return_refund_db:3306", "--", "python", "app.py"]
 
+  # Datenbankdienste
   user_db:
     image: mariadb:latest
     env_file:
@@ -136,12 +142,11 @@ services:
     volumes:
       - return_refund_db_data:/var/lib/mysql
 
-# Adminer Service
   adminer:
     image: adminer:latest
     container_name: adminer
     ports:
-      - 8080:8080  # Adminer Webportal auf Port 8080 zugänglich
+      - 8080:8080
     networks:
       - my_network
     depends_on:
@@ -155,7 +160,7 @@ services:
     build: 
       context: ./gateway
     ports:
-      - "8000:8000"  # Das Gateway wird auf Port 8000 verfügbar sein
+      - "8000:8000"
     networks:
       - my_network
     depends_on:
