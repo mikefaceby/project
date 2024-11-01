@@ -9,7 +9,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Kopiere das wait-for-it-Skript und setze die Ausführungsberechtigung
-COPY ../wait-for-it.sh /app/wait-for-it.sh
+COPY ../../wait-for-it.sh /app/wait-for-it.sh
 RUN chmod +x /app/wait-for-it.sh
 
 # Kopiere requirements.txt und installiere Abhängigkeiten
