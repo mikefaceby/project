@@ -85,6 +85,8 @@ services:
       - MYSQL_DATABASE=${USER_DB_NAME}
     networks:
       - my_network
+    volumes:
+      - user_db_data:/var/lib/mysql
 
   product_db:
     image: mariadb:latest
@@ -95,6 +97,8 @@ services:
       - MYSQL_DATABASE=${PRODUCT_DB_NAME}
     networks:
       - my_network
+    volumes:
+      - product_db_data:/var/lib/mysql
 
   cart_order_db:
     image: mariadb:latest
@@ -105,6 +109,8 @@ services:
       - MYSQL_DATABASE=${CART_ORDER_DB_NAME}
     networks:
       - my_network
+    volumes:
+      - cart_order_db_data:/var/lib/mysql
 
   sales_payment_db:
     image: mariadb:latest
@@ -115,6 +121,8 @@ services:
       - MYSQL_DATABASE=${SALES_PAYMENT_DB_NAME}
     networks:
       - my_network
+    volumes:
+      - sales_payment_db_data:/var/lib/mysql
 
   return_refund_db:
     image: mariadb:latest
@@ -125,6 +133,8 @@ services:
       - MYSQL_DATABASE=${RETURN_REFUND_DB_NAME}
     networks:
       - my_network
+    volumes:
+      - return_refund_db_data:/var/lib/mysql
 
 # Adminer Service
   adminer:
@@ -158,3 +168,10 @@ services:
 networks:
   my_network:
     driver: bridge
+
+volumes:
+  user_db_data:
+  product_db_data:
+  cart_order_db_data:
+  sales_payment_db_data:
+  return_refund_db_data:
