@@ -17,4 +17,4 @@ COPY . .
 COPY ../../wait-for-it.sh /wait-for-it.sh
 RUN chmod +x /wait-for-it.sh
 
-CMD ["./wait-for-it.sh", "db:3306", "--", "python", "app.py"]
+CMD ["./wait-for-it.sh", "cart_order_db:3306", "--", "python", "app.py"]
