@@ -1,11 +1,11 @@
-## services/user_service/app.py
+# services/sales_payment_service/app.py
 from flask import Flask, request, jsonify
 from mysql.connector import connect, Error
 from config import Config
 
 app = Flask(__name__)
 
-# Verbindung zur Datenbank herstellen
+# Establish database connection
 def get_db_connection():
     try:
         connection = connect(
@@ -32,24 +32,24 @@ def index():
         return f"Connected to database: {db_name}"
     return "Database connection failed"
 
-# Verkaufsverwaltung
+# Ticket Management
 
-# CREATE: Neues Ticket hinzufügen
+# CREATE: Add a new ticket
 @app.route('/tickets', methods=['POST'])
 def create_ticket():
     new_ticket = request.get_json()
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO ticket_system (ticket_id, sale_date, total_amount) VALUES (%s, %s, %s)",
-        (new_ticket['ticket_id'], new_ticket['sale_date'], new_ticket['total_amount'])
+        "INSERT INTO ticket_system (date, company_name, time, quantity, subtotal, total, cost, discount, tax, tax_rate, cash, credit, cart_purchase, customer_id, employee_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+        (new_ticket['date'], new_ticket.get('company_name'), new_ticket['time'], new_ticket['quantity'], new_ticket['subtotal'], new_ticket['total'], new_ticket['cost'], new_ticket.get('discount'), new_ticket['tax'], new_ticket['tax_rate'], new_ticket['cash'], new_ticket['credit'], new_ticket['cart_purchase'], new_ticket.get('customer_id'), new_ticket['employee_id'])
     )
     conn.commit()
     cursor.close()
     conn.close()
     return jsonify(new_ticket), 201
 
-# READ: Alle Tickets abrufen
+# READ: Retrieve all tickets
 @app.route('/tickets', methods=['GET'])
 def get_tickets():
     conn = get_db_connection()
@@ -60,7 +60,7 @@ def get_tickets():
     conn.close()
     return jsonify(tickets)
 
-# READ: Einzelnes Ticket abrufen
+# READ: Retrieve a single ticket
 @app.route('/tickets/<int:ticket_id>', methods=['GET'])
 def get_ticket(ticket_id):
     conn = get_db_connection()
@@ -74,22 +74,22 @@ def get_ticket(ticket_id):
         return jsonify(ticket)
     return jsonify({"error": "Ticket not found"}), 404
 
-# UPDATE: Ticket aktualisieren
+# UPDATE: Update a ticket
 @app.route('/tickets/<int:ticket_id>', methods=['PUT'])
 def update_ticket(ticket_id):
     updated_ticket = request.get_json()
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute(
-        "UPDATE ticket_system SET sale_date = %s, total_amount = %s WHERE ticket_id = %s",
-        (updated_ticket['sale_date'], updated_ticket['total_amount'], ticket_id)
+        "UPDATE ticket_system SET date = %s, company_name = %s, time = %s, quantity = %s, subtotal = %s, total = %s, cost = %s, discount = %s, tax = %s, tax_rate = %s, cash = %s, credit = %s, cart_purchase = %s, customer_id = %s, employee_id = %s WHERE ticket_id = %s",
+        (updated_ticket['date'], updated_ticket.get('company_name'), updated_ticket['time'], updated_ticket['quantity'], updated_ticket['subtotal'], updated_ticket['total'], updated_ticket['cost'], updated_ticket.get('discount'), updated_ticket['tax'], updated_ticket['tax_rate'], updated_ticket['cash'], updated_ticket['credit'], updated_ticket['cart_purchase'], updated_ticket.get('customer_id'), updated_ticket['employee_id'], ticket_id)
     )
     conn.commit()
     cursor.close()
     conn.close()
     return jsonify(updated_ticket)
 
-# DELETE: Ticket löschen
+# DELETE: Delete a ticket
 @app.route('/tickets/<int:ticket_id>', methods=['DELETE'])
 def delete_ticket(ticket_id):
     conn = get_db_connection()
@@ -100,24 +100,24 @@ def delete_ticket(ticket_id):
     conn.close()
     return jsonify({"message": "Ticket deleted"})
 
-# Steuerverwaltung
+# Tax Management
 
-# CREATE: Neue Steuer hinzufügen
+# CREATE: Add a new tax record
 @app.route('/taxes', methods=['POST'])
 def create_tax():
     new_tax = request.get_json()
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO tax_table (tax_id, tax_rate) VALUES (%s, %s)",
-        (new_tax['tax_id'], new_tax['tax_rate'])
+        "INSERT INTO tax_table (tax_year, state_tax, county_tax, city_rate, tax_rate) VALUES (%s, %s, %s, %s, %s)",
+        (new_tax['tax_year'], new_tax['state_tax'], new_tax['county_tax'], new_tax['city_rate'], new_tax['tax_rate'])
     )
     conn.commit()
     cursor.close()
     conn.close()
     return jsonify(new_tax), 201
 
-# READ: Alle Steuern abrufen
+# READ: Retrieve all taxes
 @app.route('/taxes', methods=['GET'])
 def get_taxes():
     conn = get_db_connection()
@@ -128,12 +128,12 @@ def get_taxes():
     conn.close()
     return jsonify(taxes)
 
-# READ: Einzelne Steuer abrufen
+# READ: Retrieve a single tax record
 @app.route('/taxes/<int:tax_id>', methods=['GET'])
 def get_tax(tax_id):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute('SELECT * FROM tax_table WHERE tax_id = %s', (tax_id,))
+    cursor.execute('SELECT * FROM tax_table WHERE TTID = %s', (tax_id,))
     tax = cursor.fetchone()
     cursor.close()
     conn.close()
@@ -142,66 +142,66 @@ def get_tax(tax_id):
         return jsonify(tax)
     return jsonify({"error": "Tax not found"}), 404
 
-# UPDATE: Steuer aktualisieren
+# UPDATE: Update a tax record
 @app.route('/taxes/<int:tax_id>', methods=['PUT'])
 def update_tax(tax_id):
     updated_tax = request.get_json()
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute(
-        "UPDATE tax_table SET tax_rate = %s WHERE tax_id = %s",
-        (updated_tax['tax_rate'], tax_id)
+        "UPDATE tax_table SET tax_year = %s, state_tax = %s, county_tax = %s, city_rate = %s, tax_rate = %s WHERE TTID = %s",
+        (updated_tax['tax_year'], updated_tax['state_tax'], updated_tax['county_tax'], updated_tax['city_rate'], updated_tax['tax_rate'], tax_id)
     )
     conn.commit()
     cursor.close()
     conn.close()
     return jsonify(updated_tax)
 
-# DELETE: Steuer löschen
+# DELETE: Delete a tax record
 @app.route('/taxes/<int:tax_id>', methods=['DELETE'])
 def delete_tax(tax_id):
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM tax_table WHERE tax_id = %s", (tax_id,))
+    cursor.execute("DELETE FROM tax_table WHERE TTID = %s", (tax_id,))
     conn.commit()
     cursor.close()
     conn.close()
     return jsonify({"message": "Tax deleted"})
 
-# Kassenverwaltung
+# Register Management
 
-# CREATE: Neue Registrierkasse hinzufügen
+# CREATE: Add a new register
 @app.route('/registers', methods=['POST'])
 def create_register():
     new_register = request.get_json()
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO registers_table (register_id, location, is_open) VALUES (%s, %s, %s)",
-        (new_register['register_id'], new_register['location'], new_register['is_open'])
+        "INSERT INTO register_table (open_total, close_total, register_num, open_emp_id, close_emp_id, open_time, close_time, drop_time, drop_emp_id, drop_total, note) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+        (new_register['open_total'], new_register.get('close_total'), new_register['register_num'], new_register['open_emp_id'], new_register.get('close_emp_id'), new_register['open_time'], new_register.get('close_time'), new_register.get('drop_time'), new_register.get('drop_emp_id'), new_register.get('drop_total'), new_register.get('note'))
     )
     conn.commit()
     cursor.close()
     conn.close()
     return jsonify(new_register), 201
 
-# READ: Alle Registrierkassen abrufen
+# READ: Retrieve all registers
 @app.route('/registers', methods=['GET'])
 def get_registers():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute('SELECT * FROM registers_table')
+    cursor.execute('SELECT * FROM register_table')
     registers = cursor.fetchall()
     cursor.close()
     conn.close()
     return jsonify(registers)
 
-# READ: Einzelne Registrierkasse abrufen
+# READ: Retrieve a single register
 @app.route('/registers/<int:register_id>', methods=['GET'])
 def get_register(register_id):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute('SELECT * FROM registers_table WHERE register_id = %s', (register_id,))
+    cursor.execute('SELECT * FROM register_table WHERE register_id = %s', (register_id,))
     register = cursor.fetchone()
     cursor.close()
     conn.close()
@@ -210,50 +210,50 @@ def get_register(register_id):
         return jsonify(register)
     return jsonify({"error": "Register not found"}), 404
 
-# UPDATE: Registrierkasse aktualisieren
+# UPDATE: Update a register
 @app.route('/registers/<int:register_id>', methods=['PUT'])
 def update_register(register_id):
     updated_register = request.get_json()
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute(
-        "UPDATE registers_table SET location = %s, is_open = %s WHERE register_id = %s",
-        (updated_register['location'], updated_register['is_open'], register_id)
+        "UPDATE register_table SET open_total = %s, close_total = %s, register_num = %s, open_emp_id = %s, close_emp_id = %s, open_time = %s, close_time = %s, drop_time = %s, drop_emp_id = %s, drop_total = %s, note = %s WHERE register_id = %s",
+        (updated_register['open_total'], updated_register.get('close_total'), updated_register['register_num'], updated_register['open_emp_id'], updated_register.get('close_emp_id'), updated_register['open_time'], updated_register.get('close_time'), updated_register.get('drop_time'), updated_register.get('drop_emp_id'), updated_register.get('drop_total'), updated_register.get('note'), register_id)
     )
     conn.commit()
     cursor.close()
     conn.close()
     return jsonify(updated_register)
 
-# DELETE: Registrierkasse löschen
+# DELETE: Delete a register
 @app.route('/registers/<int:register_id>', methods=['DELETE'])
 def delete_register(register_id):
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM registers_table WHERE register_id = %s", (register_id,))
+    cursor.execute("DELETE FROM register_table WHERE register_id = %s", (register_id,))
     conn.commit()
     cursor.close()
     conn.close()
     return jsonify({"message": "Register deleted"})
 
-# Geschenkkartenverwaltung
+# Gift Card Management
 
-# CREATE: Neue Geschenkkarte hinzufügen
+# CREATE: Add a new gift card
 @app.route('/giftcards', methods=['POST'])
 def create_gift_card():
     new_gift_card = request.get_json()
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO gift_card (card_id, balance) VALUES (%s, %s)",
-        (new_gift_card['card_id'], new_gift_card['balance'])
+        "INSERT INTO gift_card (promo_number, card_balance, ticket_id, customer_id) VALUES (%s, %s, %s, %s)",
+        (new_gift_card['promo_number'], new_gift_card['card_balance'], new_gift_card.get('ticket_id'), new_gift_card.get('customer_id'))
     )
     conn.commit()
     cursor.close()
     conn.close()
     return jsonify(new_gift_card), 201
 
-# READ: Alle Geschenkkarten abrufen
+# READ: Retrieve all gift cards
 @app.route('/giftcards', methods=['GET'])
 def get_gift_cards():
     conn = get_db_connection()
@@ -264,12 +264,12 @@ def get_gift_cards():
     conn.close()
     return jsonify(gift_cards)
 
-# READ: Einzelne Geschenkkarte abrufen
-@app.route('/giftcards/<int:card_id>', methods=['GET'])
-def get_gift_card(card_id):
+# READ: Retrieve a single gift card
+@app.route('/giftcards/<int:gift_id>', methods=['GET'])
+def get_gift_card(gift_id):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute('SELECT * FROM gift_card WHERE card_id = %s', (card_id,))
+    cursor.execute('SELECT * FROM gift_card WHERE gift_id = %s', (gift_id,))
     gift_card = cursor.fetchone()
     cursor.close()
     conn.close()
@@ -278,31 +278,31 @@ def get_gift_card(card_id):
         return jsonify(gift_card)
     return jsonify({"error": "Gift card not found"}), 404
 
-# UPDATE: Geschenkkarte aktualisieren
-@app.route('/giftcards/<int:card_id>', methods=['PUT'])
-def update_gift_card(card_id):
+# UPDATE: Update a gift card
+@app.route('/giftcards/<int:gift_id>', methods=['PUT'])
+def update_gift_card(gift_id):
     updated_gift_card = request.get_json()
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute(
-        "UPDATE gift_card SET balance = %s WHERE card_id = %s",
-        (updated_gift_card['balance'], card_id)
+        "UPDATE gift_card SET promo_number = %s, card_balance = %s, ticket_id = %s, customer_id = %s WHERE gift_id = %s",
+        (updated_gift_card['promo_number'], updated_gift_card['card_balance'], updated_gift_card.get('ticket_id'), updated_gift_card.get('customer_id'), gift_id)
     )
     conn.commit()
     cursor.close()
     conn.close()
     return jsonify(updated_gift_card)
 
-# DELETE: Geschenkkarte löschen
-@app.route('/giftcards/<int:card_id>', methods=['DELETE'])
-def delete_gift_card(card_id):
+# DELETE: Delete a gift card
+@app.route('/giftcards/<int:gift_id>', methods=['DELETE'])
+def delete_gift_card(gift_id):
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM gift_card WHERE card_id = %s", (card_id,))
+    cursor.execute("DELETE FROM gift_card WHERE gift_id = %s", (gift_id,))
     conn.commit()
     cursor.close()
     conn.close()
     return jsonify({"message": "Gift card deleted"})
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5001)  # Externer Port für den Service
+    app.run(host='0.0.0.0', port=5001)  # Sales & Payment service running on port 5001
