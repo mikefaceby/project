@@ -35,68 +35,94 @@ def index():
 # GET: Retrieve all customers
 @app.route('/customers', methods=['GET'])
 def get_customers():
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute('SELECT * FROM customer_info')
-    customers = cursor.fetchall()
-    conn.close()
-    return jsonify(customers)
+    try:
+        conn = get_db_connection()
+        if conn is None:
+            return jsonify({"error": "Database connection failed"}), 500
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute('SELECT * FROM customer_info')
+        customers = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return jsonify(customers)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 # POST: Create a new customer
 @app.route('/customers', methods=['POST'])
 def create_customer():
-    new_customer = request.get_json()
-    connection = get_db_connection()
-    cursor = connection.cursor()
-    cursor.execute(
-        "INSERT INTO customer_info (customer_id, name) VALUES (%s, %s)",
-        (new_customer['customer_id'], new_customer['name'])
-    )
-    connection.commit()
-    cursor.close()
-    connection.close()
-    return jsonify(new_customer), 201
+    try:
+        new_customer = request.get_json()
+        connection = get_db_connection()
+        if connection is None:
+            return jsonify({"error": "Database connection failed"}), 500
+        cursor = connection.cursor()
+        cursor.execute(
+            "INSERT INTO customer_info (customer_id, name) VALUES (%s, %s)",
+            (new_customer['customer_id'], new_customer['name'])
+        )
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return jsonify(new_customer), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 # GET: Retrieve customer information
 @app.route('/customers/<int:customer_id>', methods=['GET'])
 def get_customer(customer_id):
-    connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM customer_info WHERE customer_id = %s", (customer_id,))
-    customer = cursor.fetchone()
-    cursor.close()
-    connection.close()
+    try:
+        connection = get_db_connection()
+        if connection is None:
+            return jsonify({"error": "Database connection failed"}), 500
+        cursor = connection.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM customer_info WHERE customer_id = %s", (customer_id,))
+        customer = cursor.fetchone()
+        cursor.close()
+        connection.close()
 
-    if customer:
-        return jsonify(customer)
-    return jsonify({"error": "Customer not found"}), 404
+        if customer:
+            return jsonify(customer)
+        return jsonify({"error": "Customer not found"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 # PUT: Update customer information
 @app.route('/customers/<int:customer_id>', methods=['PUT'])
 def update_customer(customer_id):
-    updated_customer = request.get_json()
-    connection = get_db_connection()
-    cursor = connection.cursor()
-    cursor.execute(
-        "UPDATE customer_info SET name = %s WHERE customer_id = %s",
-        (updated_customer['name'], customer_id)
-    )
-    connection.commit()
-    cursor.close()
-    connection.close()
-    return jsonify(updated_customer)
+    try:
+        updated_customer = request.get_json()
+        connection = get_db_connection()
+        if connection is None:
+            return jsonify({"error": "Database connection failed"}), 500
+        cursor = connection.cursor()
+        cursor.execute(
+            "UPDATE customer_info SET name = %s WHERE customer_id = %s",
+            (updated_customer['name'], customer_id)
+        )
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return jsonify(updated_customer)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 # DELETE: Delete a customer
 @app.route('/customers/<int:customer_id>', methods=['DELETE'])
 def delete_customer(customer_id):
-    connection = get_db_connection()
-    cursor = connection.cursor()
-    cursor.execute("DELETE FROM customer_info WHERE customer_id = %s", (customer_id,))
-    connection.commit()
-    cursor.close()
-    connection.close()
+    try:
+        connection = get_db_connection()
+        if connection is None:
+            return jsonify({"error": "Database connection failed"}), 500
+        cursor = connection.cursor()
+        cursor.execute("DELETE FROM customer_info WHERE customer_id = %s", (customer_id,))
+        connection.commit()
+        cursor.close()
+        connection.close()
 
-    return jsonify({"message": "Customer deleted"})
+        return jsonify({"message": "Customer deleted"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 # POST: Create a new employee
 @app.route('/employee', methods=['POST'])
