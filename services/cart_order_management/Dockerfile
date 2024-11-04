@@ -1,5 +1,3 @@
-# Dockerfile für jeden Service
-
 FROM python:3.9-slim
 WORKDIR /app
 
@@ -15,4 +13,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Kopiere den restlichen Code
 COPY . .
 
-CMD ["python", "app.py"]
+# Warte auf die Datenbankverbindung, bevor die App startet
+COPY ../../wait-for-it.sh /wait-for-it.sh
+RUN chmod +x /wait-for-it.sh
+
+CMD ["./wait-for-it.sh", "db:3306", "--", "python", "app.py"]

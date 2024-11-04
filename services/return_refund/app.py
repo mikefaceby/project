@@ -1,19 +1,36 @@
-# services/return_refund/app.py
+# services/user_service/app.py
 from flask import Flask, request, jsonify
-import os
-import mysql.connector
+from mysql.connector import connect, Error
+from config import Config
 
 app = Flask(__name__)
 
 # Verbindung zur Datenbank herstellen
 def get_db_connection():
-    connection = mysql.connector.connect(
-        host='[SERVICE_DB_HOST]',  # Hostname des MariaDB-Containers
-        user=os.getenv('[SERVICE_DB_USER]'),
-        password=os.getenv('[SERVICE_DB_PASSWORD]'),
-        database=os.getenv('[SERVICE_DB_NAME]')
-    )
-    return connection
+    try:
+        connection = connect(
+            host=Config.DB_HOST,
+            user=Config.DB_USER,
+            password=Config.DB_PASSWORD,
+            database=Config.DB_NAME,
+            port=Config.DB_PORT
+        )
+        return connection
+    except Error as e:
+        print(f"Error connecting to database: {e}")
+        return None
+
+@app.route('/')
+def index():
+    connection = get_db_connection()
+    if connection:
+        cursor = connection.cursor()
+        cursor.execute("SELECT DATABASE();")
+        db_name = cursor.fetchone()[0]
+        cursor.close()
+        connection.close()
+        return f"Connected to database: {db_name}"
+    return "Database connection failed"
 
 # Rückgabeverwaltung
 

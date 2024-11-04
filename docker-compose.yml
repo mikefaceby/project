@@ -7,8 +7,6 @@ services:
       dockerfile: Dockerfile
     env_file:
       - .env
-    environment:
-      - DATABASE_URL=mariadb://${USER_DB_USER}:${USER_DB_PASSWORD}@user_db/${USER_DB_NAME}
     depends_on:
       - user_db
     networks:
@@ -22,8 +20,6 @@ services:
       dockerfile: Dockerfile
     env_file:
       - .env
-    environment:
-      - DATABASE_URL=mariadb://${PRODUCT_DB_USER}:${PRODUCT_DB_PASSWORD}@product_db/${PRODUCT_DB_NAME}
     depends_on:
       - product_db
     networks:
@@ -37,8 +33,6 @@ services:
       dockerfile: Dockerfile
     env_file:
       - .env
-    environment:
-      - DATABASE_URL=mariadb://${CART_ORDER_DB_USER}:${CART_ORDER_DB_PASSWORD}@cart_order_db/${CART_ORDER_DB_NAME}
     depends_on:
       - cart_order_db
     networks:
@@ -52,8 +46,6 @@ services:
       dockerfile: Dockerfile
     env_file:
       - .env
-    environment:
-      - DATABASE_URL=mariadb://${SALES_PAYMENT_DB_USER}:${SALES_PAYMENT_DB_PASSWORD}@sales_payment_db/${SALES_PAYMENT_DB_NAME}
     depends_on:
       - sales_payment_db
     networks:
@@ -67,8 +59,6 @@ services:
       dockerfile: Dockerfile
     env_file:
       - .env
-    environment:
-      - DATABASE_URL=mariadb://${RETURN_REFUND_DB_USER}:${RETURN_REFUND_DB_PASSWORD}@return_refund_db/${RETURN_REFUND_DB_NAME}
     depends_on:
       - return_refund_db
     networks:
@@ -81,9 +71,6 @@ services:
     image: mariadb:latest
     env_file:
       - .env
-    environment:
-      - MYSQL_ROOT_PASSWORD=${USER_DB_PASSWORD}
-      - MYSQL_DATABASE=${USER_DB_NAME}
     networks:
       - my_network
     volumes:
@@ -93,9 +80,6 @@ services:
     image: mariadb:latest
     env_file:
       - .env
-    environment:
-      - MYSQL_ROOT_PASSWORD=${PRODUCT_DB_PASSWORD}
-      - MYSQL_DATABASE=${PRODUCT_DB_NAME}
     networks:
       - my_network
     volumes:
@@ -105,9 +89,6 @@ services:
     image: mariadb:latest
     env_file:
       - .env
-    environment:
-      - MYSQL_ROOT_PASSWORD=${CART_ORDER_DB_PASSWORD}
-      - MYSQL_DATABASE=${CART_ORDER_DB_NAME}
     networks:
       - my_network
     volumes:
@@ -117,9 +98,6 @@ services:
     image: mariadb:latest
     env_file:
       - .env
-    environment:
-      - MYSQL_ROOT_PASSWORD=${SALES_PAYMENT_DB_PASSWORD}
-      - MYSQL_DATABASE=${SALES_PAYMENT_DB_NAME}
     networks:
       - my_network
     volumes:
@@ -129,9 +107,6 @@ services:
     image: mariadb:latest
     env_file:
       - .env
-    environment:
-      - MYSQL_ROOT_PASSWORD=${RETURN_REFUND_DB_PASSWORD}
-      - MYSQL_DATABASE=${RETURN_REFUND_DB_NAME}
     networks:
       - my_network
     volumes:
@@ -139,7 +114,6 @@ services:
 
   adminer:
     image: adminer:latest
-    container_name: adminer
     ports:
       - 8080:8080
     networks:
