@@ -14,7 +14,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Warte auf die Datenbankverbindung, bevor die App startet
-COPY ../../wait-for-it.sh /wait-for-it.sh
+COPY wait-for-it.sh /wait-for-it.sh
 RUN chmod +x /wait-for-it.sh
 
 CMD ["./wait-for-it.sh", "user_db:3306", "--", "python", "app.py"]
