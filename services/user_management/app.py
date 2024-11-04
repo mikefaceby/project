@@ -312,4 +312,4 @@ def create_store():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)  # User-Service läuft auf Port 5000
+    app.run(host='0.0.0.0', port=5000, debug=True)  # User-Service läuft auf Port 5000

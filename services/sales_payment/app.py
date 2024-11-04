@@ -305,4 +305,4 @@ def delete_gift_card(gift_id):
     return jsonify({"message": "Gift card deleted"})
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5001)  # Sales & Payment service running on port 5001
+    app.run(host='0.0.0.0', port=5001, debug=True)  # Sales & Payment service running on port 5001

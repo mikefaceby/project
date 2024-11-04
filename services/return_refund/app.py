@@ -101,4 +101,4 @@ def delete_return(return_id):
     return jsonify({"message": "Return deleted"})
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5004)  # Return & Refund service running on port 5004
+    app.run(host='0.0.0.0', port=5004, debug=True)  # Return & Refund service running on port 5004
