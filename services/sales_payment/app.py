@@ -2,6 +2,7 @@
 from flask import Flask, request, jsonify
 from mysql.connector import connect, Error
 from config import Config
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -32,6 +33,13 @@ def index():
         return f"Connected to database: {db_name}"
     return "Database connection failed"
 
+# Helper function to serialize datetime and time fields
+def serialize_ticket(ticket):
+    for key in ['date', 'time']:
+        if ticket.get(key) and isinstance(ticket[key], (datetime,)):
+            ticket[key] = ticket[key].isoformat()
+    return ticket
+
 # Ticket Management
 
 # CREATE: Add a new ticket
@@ -41,8 +49,20 @@ def create_ticket():
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO ticket_system (date, company_name, time, quantity, subtotal, total, cost, discount, tax, tax_rate, cash, credit, cart_purchase, customer_id, employee_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-        (new_ticket['date'], new_ticket.get('company_name'), new_ticket['time'], new_ticket['quantity'], new_ticket['subtotal'], new_ticket['total'], new_ticket['cost'], new_ticket.get('discount'), new_ticket['tax'], new_ticket['tax_rate'], new_ticket['cash'], new_ticket['credit'], new_ticket['cart_purchase'], new_ticket.get('customer_id'), new_ticket['employee_id'])
+        """
+        INSERT INTO ticket_system (
+            date, company_name, time, quantity, subtotal, total, cost, discount, 
+            tax, tax_rate, cash, credit, cart_purchase, customer_id, employee_id
+        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """,
+        (
+            new_ticket['date'], new_ticket.get('company_name'), new_ticket['time'],
+            new_ticket['quantity'], new_ticket['subtotal'], new_ticket['total'], 
+            new_ticket['cost'], new_ticket.get('discount'), new_ticket['tax'], 
+            new_ticket['tax_rate'], new_ticket['cash'], new_ticket['credit'], 
+            new_ticket['cart_purchase'], new_ticket.get('customer_id'), 
+            new_ticket['employee_id']
+        )
     )
     conn.commit()
     cursor.close()
@@ -58,6 +78,7 @@ def get_tickets():
     tickets = cursor.fetchall()
     cursor.close()
     conn.close()
+    tickets = [serialize_ticket(ticket) for ticket in tickets]
     return jsonify(tickets)
 
 # READ: Retrieve a single ticket
@@ -71,7 +92,7 @@ def get_ticket(ticket_id):
     conn.close()
 
     if ticket:
-        return jsonify(ticket)
+        return jsonify(serialize_ticket(ticket))
     return jsonify({"error": "Ticket not found"}), 404
 
 # UPDATE: Update a ticket
@@ -81,8 +102,22 @@ def update_ticket(ticket_id):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute(
-        "UPDATE ticket_system SET date = %s, company_name = %s, time = %s, quantity = %s, subtotal = %s, total = %s, cost = %s, discount = %s, tax = %s, tax_rate = %s, cash = %s, credit = %s, cart_purchase = %s, customer_id = %s, employee_id = %s WHERE ticket_id = %s",
-        (updated_ticket['date'], updated_ticket.get('company_name'), updated_ticket['time'], updated_ticket['quantity'], updated_ticket['subtotal'], updated_ticket['total'], updated_ticket['cost'], updated_ticket.get('discount'), updated_ticket['tax'], updated_ticket['tax_rate'], updated_ticket['cash'], updated_ticket['credit'], updated_ticket['cart_purchase'], updated_ticket.get('customer_id'), updated_ticket['employee_id'], ticket_id)
+        """
+        UPDATE ticket_system 
+        SET date = %s, company_name = %s, time = %s, quantity = %s, 
+            subtotal = %s, total = %s, cost = %s, discount = %s, tax = %s, 
+            tax_rate = %s, cash = %s, credit = %s, cart_purchase = %s, 
+            customer_id = %s, employee_id = %s 
+        WHERE ticket_id = %s
+        """,
+        (
+            updated_ticket['date'], updated_ticket.get('company_name'), updated_ticket['time'],
+            updated_ticket['quantity'], updated_ticket['subtotal'], updated_ticket['total'], 
+            updated_ticket['cost'], updated_ticket.get('discount'), updated_ticket['tax'], 
+            updated_ticket['tax_rate'], updated_ticket['cash'], updated_ticket['credit'], 
+            updated_ticket['cart_purchase'], updated_ticket.get('customer_id'), 
+            updated_ticket['employee_id'], ticket_id
+        )
     )
     conn.commit()
     cursor.close()
