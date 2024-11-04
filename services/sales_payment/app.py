@@ -212,7 +212,7 @@ def create_register():
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO register_table (open_total, close_total, register_num, open_emp_id, close_emp_id, open_time, close_time, drop_time, drop_emp_id, drop_total, note) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+        "INSERT INTO registers_table (open_total, close_total, register_num, open_emp_id, close_emp_id, open_time, close_time, drop_time, drop_emp_id, drop_total, note) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
         (new_register['open_total'], new_register.get('close_total'), new_register['register_num'], new_register['open_emp_id'], new_register.get('close_emp_id'), new_register['open_time'], new_register.get('close_time'), new_register.get('drop_time'), new_register.get('drop_emp_id'), new_register.get('drop_total'), new_register.get('note'))
     )
     conn.commit()
@@ -225,7 +225,7 @@ def create_register():
 def get_registers():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute('SELECT * FROM register_table')
+    cursor.execute('SELECT * FROM registers_table')
     registers = cursor.fetchall()
     cursor.close()
     conn.close()
@@ -236,7 +236,7 @@ def get_registers():
 def get_register(register_id):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute('SELECT * FROM register_table WHERE register_id = %s', (register_id,))
+    cursor.execute('SELECT * FROM registers_table WHERE register_id = %s', (register_id,))
     register = cursor.fetchone()
     cursor.close()
     conn.close()
@@ -252,7 +252,7 @@ def update_register(register_id):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute(
-        "UPDATE register_table SET open_total = %s, close_total = %s, register_num = %s, open_emp_id = %s, close_emp_id = %s, open_time = %s, close_time = %s, drop_time = %s, drop_emp_id = %s, drop_total = %s, note = %s WHERE register_id = %s",
+        "UPDATE registers_table SET open_total = %s, close_total = %s, register_num = %s, open_emp_id = %s, close_emp_id = %s, open_time = %s, close_time = %s, drop_time = %s, drop_emp_id = %s, drop_total = %s, note = %s WHERE register_id = %s",
         (updated_register['open_total'], updated_register.get('close_total'), updated_register['register_num'], updated_register['open_emp_id'], updated_register.get('close_emp_id'), updated_register['open_time'], updated_register.get('close_time'), updated_register.get('drop_time'), updated_register.get('drop_emp_id'), updated_register.get('drop_total'), updated_register.get('note'), register_id)
     )
     conn.commit()
@@ -265,7 +265,7 @@ def update_register(register_id):
 def delete_register(register_id):
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM register_table WHERE register_id = %s", (register_id,))
+    cursor.execute("DELETE FROM registers_table WHERE register_id = %s", (register_id,))
     conn.commit()
     cursor.close()
     conn.close()

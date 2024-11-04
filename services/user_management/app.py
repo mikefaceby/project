@@ -289,7 +289,7 @@ def delete_employee(employee_id):
         return jsonify({"error": str(e)}), 500
 
 # POST: Create a new store
-@app.route('/store', methods=['POST'])
+@app.route('/stores', methods=['POST'])
 def create_store():
     try:
         new_store = request.get_json()

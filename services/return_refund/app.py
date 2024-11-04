@@ -35,7 +35,7 @@ def index():
 # Return Management
 
 # CREATE: Add a new return
-@app.route('/returns', methods=['POST'])
+@app.route('/return_table', methods=['POST'])
 def create_return():
     new_return = request.get_json()
     conn = get_db_connection()
@@ -50,7 +50,7 @@ def create_return():
     return jsonify(new_return), 201
 
 # READ: Retrieve all returns
-@app.route('/returns', methods=['GET'])
+@app.route('/return_table', methods=['GET'])
 def get_returns():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -61,7 +61,7 @@ def get_returns():
     return jsonify(returns)
 
 # READ: Retrieve a single return
-@app.route('/returns/<int:return_id>', methods=['GET'])
+@app.route('/return_table/<int:return_id>', methods=['GET'])
 def get_return(return_id):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -75,7 +75,7 @@ def get_return(return_id):
     return jsonify({"error": "Return not found"}), 404
 
 # UPDATE: Update a return
-@app.route('/returns/<int:return_id>', methods=['PUT'])
+@app.route('/return_table/<int:return_id>', methods=['PUT'])
 def update_return(return_id):
     updated_return = request.get_json()
     conn = get_db_connection()
@@ -90,7 +90,7 @@ def update_return(return_id):
     return jsonify(updated_return)
 
 # DELETE: Delete a return
-@app.route('/returns/<int:return_id>', methods=['DELETE'])
+@app.route('/return_table/<int:return_id>', methods=['DELETE'])
 def delete_return(return_id):
     conn = get_db_connection()
     cursor = conn.cursor()

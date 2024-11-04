@@ -35,7 +35,7 @@ def index():
 # Cart Management
 
 # CREATE: Add a new cart
-@app.route('/carts', methods=['POST'])
+@app.route('/cart', methods=['POST'])
 def create_cart():
     new_cart = request.get_json()
     conn = get_db_connection()
@@ -50,7 +50,7 @@ def create_cart():
     return jsonify(new_cart), 201
 
 # READ: Retrieve all carts
-@app.route('/carts', methods=['GET'])
+@app.route('/cart', methods=['GET'])
 def get_carts():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -61,7 +61,7 @@ def get_carts():
     return jsonify(carts)
 
 # READ: Retrieve a single cart
-@app.route('/carts/<int:cart_id>', methods=['GET'])
+@app.route('/cart/<int:cart_id>', methods=['GET'])
 def get_cart(cart_id):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -75,7 +75,7 @@ def get_cart(cart_id):
     return jsonify({"error": "Cart not found"}), 404
 
 # UPDATE: Update a cart
-@app.route('/carts/<int:cart_id>', methods=['PUT'])
+@app.route('/cart/<int:cart_id>', methods=['PUT'])
 def update_cart(cart_id):
     updated_cart = request.get_json()
     conn = get_db_connection()
@@ -90,7 +90,7 @@ def update_cart(cart_id):
     return jsonify(updated_cart)
 
 # DELETE: Delete a cart
-@app.route('/carts/<int:cart_id>', methods=['DELETE'])
+@app.route('/cart/<int:cart_id>', methods=['DELETE'])
 def delete_cart(cart_id):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -103,7 +103,7 @@ def delete_cart(cart_id):
 # Cart In Progress Management
 
 # CREATE: Add a new cart in progress
-@app.route('/carts/inprogress', methods=['POST'])
+@app.route('/cart_inprogress', methods=['POST'])
 def create_cart_in_progress():
     new_cart_in_progress = request.get_json()
     conn = get_db_connection()
@@ -118,7 +118,7 @@ def create_cart_in_progress():
     return jsonify(new_cart_in_progress), 201
 
 # READ: Retrieve all carts in progress
-@app.route('/carts/inprogress', methods=['GET'])
+@app.route('/cart_inprogress', methods=['GET'])
 def get_carts_in_progress():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -129,7 +129,7 @@ def get_carts_in_progress():
     return jsonify(carts_in_progress)
 
 # READ: Retrieve a single cart in progress
-@app.route('/carts/inprogress/<int:CID>', methods=['GET'])
+@app.route('/cart_inprogress/<int:CID>', methods=['GET'])
 def get_cart_in_progress(CID):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -143,7 +143,7 @@ def get_cart_in_progress(CID):
     return jsonify({"error": "Cart in progress not found"}), 404
 
 # UPDATE: Update a cart in progress
-@app.route('/carts/inprogress/<int:CID>', methods=['PUT'])
+@app.route('/cart_inprogress/<int:CID>', methods=['PUT'])
 def update_cart_in_progress(CID):
     updated_cart_in_progress = request.get_json()
     conn = get_db_connection()
@@ -158,7 +158,7 @@ def update_cart_in_progress(CID):
     return jsonify(updated_cart_in_progress)
 
 # DELETE: Delete a cart in progress
-@app.route('/carts/inprogress/<int:CID>', methods=['DELETE'])
+@app.route('/cart_inprogress/<int:CID>', methods=['DELETE'])
 def delete_cart_in_progress(CID):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -171,7 +171,7 @@ def delete_cart_in_progress(CID):
 # Item List Management
 
 # CREATE: Add a new item
-@app.route('/items', methods=['POST'])
+@app.route('/item_list', methods=['POST'])
 def create_item():
     new_item = request.get_json()
     conn = get_db_connection()
@@ -186,7 +186,7 @@ def create_item():
     return jsonify(new_item), 201
 
 # READ: Retrieve all items
-@app.route('/items', methods=['GET'])
+@app.route('/item_list', methods=['GET'])
 def get_items():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -197,7 +197,7 @@ def get_items():
     return jsonify(items)
 
 # READ: Retrieve a single item
-@app.route('/items/<int:TID>', methods=['GET'])
+@app.route('/item_list/<int:TID>', methods=['GET'])
 def get_item(TID):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -211,7 +211,7 @@ def get_item(TID):
     return jsonify({"error": "Item not found"}), 404
 
 # UPDATE: Update an item
-@app.route('/items/<int:TID>', methods=['PUT'])
+@app.route('/item_list/<int:TID>', methods=['PUT'])
 def update_item(TID):
     updated_item = request.get_json()
     conn = get_db_connection()
@@ -226,7 +226,7 @@ def update_item(TID):
     return jsonify(updated_item)
 
 # DELETE: Delete an item
-@app.route('/items/<int:TID>', methods=['DELETE'])
+@app.route('/item_list/<int:TID>', methods=['DELETE'])
 def delete_item(TID):
     conn = get_db_connection()
     cursor = conn.cursor()

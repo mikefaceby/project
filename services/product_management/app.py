@@ -313,7 +313,7 @@ def delete_order(OID):
 # Order Ticket Management
 
 # CREATE: Add a new order ticket
-@app.route('/orders/tickets', methods=['POST'])
+@app.route('//orders_ticket', methods=['POST'])
 def create_order_ticket():
     new_order_ticket = request.get_json()
     conn = get_db_connection()
@@ -348,7 +348,7 @@ def create_order_ticket():
     return jsonify(new_order_ticket), 201
 
 # READ: Retrieve all order tickets
-@app.route('/orders/tickets', methods=['GET'])
+@app.route('/orders_ticket', methods=['GET'])
 def get_order_tickets():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -359,7 +359,7 @@ def get_order_tickets():
     return jsonify(order_tickets)
 
 # READ: Retrieve a single order ticket
-@app.route('/orders/tickets/<int:OTID>', methods=['GET'])
+@app.route('/orders_ticket/<int:OTID>', methods=['GET'])
 def get_order_ticket(OTID):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -373,7 +373,7 @@ def get_order_ticket(OTID):
     return jsonify({"error": "Order ticket not found"}), 404
 
 # UPDATE: Update an order ticket
-@app.route('/orders/tickets/<int:OTID>', methods=['PUT'])
+@app.route('/orders_ticket/<int:OTID>', methods=['PUT'])
 def update_order_ticket(OTID):
     updated_order_ticket = request.get_json()
     conn = get_db_connection()
@@ -409,7 +409,7 @@ def update_order_ticket(OTID):
     return jsonify(updated_order_ticket)
 
 # DELETE: Delete an order ticket
-@app.route('/orders/tickets/<int:OTID>', methods=['DELETE'])
+@app.route('/orders_ticket/<int:OTID>', methods=['DELETE'])
 def delete_order_ticket(OTID):
     conn = get_db_connection()
     cursor = conn.cursor()
