@@ -75,6 +75,7 @@ services:
       - my_network
     volumes:
       - user_db_data:/var/lib/mysql
+      - ./db_dumps/user_management.sql:/docker-entrypoint-initdb.d/user_management.sql
 
   product_db:
     image: mariadb:latest
@@ -84,6 +85,7 @@ services:
       - my_network
     volumes:
       - product_db_data:/var/lib/mysql
+      - ./db_dumps/product_management.sql:/docker-entrypoint-initdb.d/product_management.sql
 
   cart_order_db:
     image: mariadb:latest
@@ -93,6 +95,7 @@ services:
       - my_network
     volumes:
       - cart_order_db_data:/var/lib/mysql
+      - ./db_dumps/cart_order_management.sql:/docker-entrypoint-initdb.d/cart_order_management.sql
 
   sales_payment_db:
     image: mariadb:latest
@@ -102,6 +105,7 @@ services:
       - my_network
     volumes:
       - sales_payment_db_data:/var/lib/mysql
+      - ./db_dumps/sales_payment.sql:/docker-entrypoint-initdb.d/sales_payment.sql
 
   return_refund_db:
     image: mariadb:latest
@@ -111,6 +115,7 @@ services:
       - my_network
     volumes:
       - return_refund_db_data:/var/lib/mysql
+      - ./db_dumps/return_refund.sql:/docker-entrypoint-initdb.d/return_refund.sql
 
   adminer:
     image: adminer:latest
